@@ -18,7 +18,7 @@ export const sendCode = async (req: Request, res: Response): Promise<Response> =
             body: "Your confirmation code is " + token
         };
         await twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN).messages.create(params);
-        return res.status(200).json({ message: "Message sent", token, status: 200 });
+        return res.status(200).json({ message: "Message sent", token, number, status: 200 });
     } catch (e) {
         console.error(e);
         return res.status(500).json({ status: 500, message: 'Internal server error', error: e });
@@ -44,7 +44,7 @@ export const signUp = async (req: Request, res: Response): Promise<Response> => 
             photo
         });
         await newUser.save();
-        return res.status(200).json({ status: 200 });
+        return res.status(200).json({ number, status: 200 });
     } catch (e) {
         console.error(e);
         return res.status(500).json({ status: 500, message: 'Internal server error', error: e });

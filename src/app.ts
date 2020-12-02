@@ -5,6 +5,7 @@ import cors from 'cors';
 const app = express();
 
 import authRoutes from './routes/auth';
+import userRoutes from './routes/user';
 
 // middlewares
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use(cors({
 
 // routes
 app.use(authRoutes);
+app.use(userRoutes);
 
 // settings
 app.set('port', process.env.PORT || 3000);

@@ -3,9 +3,9 @@ import { Response } from 'express';
 import User from '../models/User';
 
 export const getUserInfo = async (req: any, res: Response) => {
-    const { _id } = req.user;
+    const { number } = req.params;
     try {
-        const user = await User.findOne({ _id });
+        const user = await User.findOne({ number });
         return res.status(200).json({ status: 200, user });
     } catch (e) {
         console.error(e);

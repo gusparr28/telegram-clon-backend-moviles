@@ -3,6 +3,6 @@ const router = Router();
 
 import { getUserInfo } from '../controllers/user.controller';
 
-router.get('/profile', getUserInfo)
+router.get('/profile/:number', getUserInfo)
 
 export default router;
