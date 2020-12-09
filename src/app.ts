@@ -4,24 +4,19 @@ import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 
-const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer);
-
 import authRoutes from './routes/auth';
 import userRoutes from './routes/user';
+import chatRoutes from './routes/chat';
 
-// middlewares
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cors({
-    origin: true
-}));
+const app = express();
+const httpServer: any = createServer(app);
+const io = new Server(httpServer);
+const port = process.env.PORT || 3000;
 
 // socket 
 io.on('connection', (socket) => {
-    console.log('socket', socket);
-    socket.on('disconnect', () => {
+    console.log(socket);
+    socket.on('disconnect', function () {
         io.emit('users-changed', { user: socket.username, event: 'left' });
     });
 
@@ -35,11 +30,19 @@ io.on('connection', (socket) => {
     });
 });
 
+// middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cors({
+    origin: 'http://localhost:8100',
+    credentials: true
+}));
+
 // routes
 app.use(authRoutes);
 app.use(userRoutes);
+app.use(chatRoutes);
 
-// settings
-app.set('port', process.env.PORT || 3000);
-
-export default app;
+export default () => {
+    return { httpServer, port };
+}
