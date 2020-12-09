@@ -9,6 +9,3 @@ require("./database");
 app_1.default().httpServer.listen(app_1.default().port, () => {
     console.log('server listening on port', app_1.default().port);
 });
-// app.listen(app.get('port'), () => {
-//     console.log('server listening on port', app.get('port'));
-// });
