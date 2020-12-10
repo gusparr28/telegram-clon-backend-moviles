@@ -9,26 +9,25 @@ import userRoutes from './routes/user';
 import chatRoutes from './routes/chat';
 
 const app = express();
-const httpServer: any = createServer(app);
-const io = new Server(httpServer);
-const port = process.env.PORT || 3000;
+// const httpServer: any = createServer(app);
+// const io = new Server(httpServer);
 
 // socket 
-io.on('connection', (socket) => {
-    console.log(socket);
-    socket.on('disconnect', function () {
-        io.emit('users-changed', { user: socket.username, event: 'left' });
-    });
+// io.on('connection', (socket) => {
+//     console.log(socket);
+//     socket.on('disconnect', function () {
+//         io.emit('users-changed', { user: socket.username, event: 'left' });
+//     });
 
-    socket.on('set-name', (name: any) => {
-        socket.username = name;
-        io.emit('users-changed', { user: name, event: 'joined' });
-    });
+//     socket.on('set-name', (name: any) => {
+//         socket.username = name;
+//         io.emit('users-changed', { user: name, event: 'joined' });
+//     });
 
-    socket.on('send-message', (message: any) => {
-        io.emit('message', { msg: message.text, user: socket.username, createdAt: new Date() });
-    });
-});
+//     socket.on('send-message', (message: any) => {
+//         io.emit('message', { msg: message.text, user: socket.username, createdAt: new Date() });
+//     });
+// });
 
 // middlewares
 app.use(express.json());
@@ -43,6 +42,7 @@ app.use(authRoutes);
 app.use(userRoutes);
 app.use(chatRoutes);
 
-export default () => {
-    return { httpServer, port };
-}
+// settings
+app.set('port', process.env.PORT || 3000);
+
+export default app;
