@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // modules importation
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
+// import { createServer } from 'http';
+// import { Server } from 'socket.io';
 const auth_1 = __importDefault(require("./routes/auth"));
 const user_1 = __importDefault(require("./routes/user"));
 const chat_1 = __importDefault(require("./routes/chat"));
@@ -30,8 +32,7 @@ const app = express_1.default();
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(cors_1.default({
-    origin: 'http://localhost:8100',
-    credentials: true
+    origin: true
 }));
 // routes
 app.use(auth_1.default);
