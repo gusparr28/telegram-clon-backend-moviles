@@ -1,14 +1,12 @@
 // modules importation
 import express from 'express';
 import cors from 'cors';
+const app = express();
 // import { createServer } from 'http';
 // import { Server } from 'socket.io';
 
 import authRoutes from './routes/auth';
 import userRoutes from './routes/user';
-import chatRoutes from './routes/chat';
-
-const app = express();
 // const httpServer: any = createServer(app);
 // const io = new Server(httpServer);
 
@@ -39,7 +37,6 @@ app.use(cors({
 // routes
 app.use(authRoutes);
 app.use(userRoutes);
-app.use(chatRoutes);
 
 // settings
 app.set('port', process.env.PORT || 3000);
