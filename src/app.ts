@@ -2,30 +2,24 @@
 import express from 'express';
 import cors from 'cors';
 const app = express();
-// import { createServer } from 'http';
-// import { Server } from 'socket.io';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+
+import Chat from './models/Chat';
 
 import authRoutes from './routes/auth';
 import userRoutes from './routes/user';
-// const httpServer: any = createServer(app);
+import chatRoutes from './routes/chat';
+
+const httpServer: any = createServer(app);
 // const io = new Server(httpServer);
-
-// socket 
-// io.on('connection', (socket) => {
-//     console.log(socket);
-//     socket.on('disconnect', function () {
-//         io.emit('users-changed', { user: socket.username, event: 'left' });
-//     });
-
-//     socket.on('set-name', (name: any) => {
-//         socket.username = name;
-//         io.emit('users-changed', { user: name, event: 'joined' });
-//     });
-
-//     socket.on('send-message', (message: any) => {
-//         io.emit('message', { msg: message.text, user: socket.username, createdAt: new Date() });
-//     });
-// });
+const port = process.env.PORT || 3000;
+const io = require("socket.io")(httpServer, {
+    cors: {
+        origin: "http://localhost:8100",
+        credentials: true
+    }
+});
 
 // middlewares
 app.use(express.json());
@@ -34,11 +28,46 @@ app.use(cors({
     origin: true
 }));
 
+io.on('connection', (socket: any) => {
+    socket.on('join', ({ room }: any) => {
+        socket.join(room);
+        socket.room = room;
+    });
+    socket.on('send-message', async (message: any) => {
+        try {
+            console.log(message);
+            await Chat.findByIdAndUpdate(socket.room, {
+                messageInfo: message
+            }, { new: true });
+            // const newChat = new Chat({
+            //     messageInfo: [{
+            //         message: message.text,
+            //         user: message.user
+            //     }]
+            // });
+            // await newChat.save();
+            socket.broadcast.to(socket.room).emit('message', message);
+        } catch (e) {
+            console.error(e);
+        };
+        // io.to(socket.room).emit('message', { user: message.user, text: message.text });
+    });
+    socket.on('typing', (user: any) => {
+        socket.broadcast.to(socket.room).emit('user-typing', { message: user + ' is typing...' });
+    });
+    socket.on('disconnect', () => {
+        console.log('User has left');
+    });
+});
+
 // routes
 app.use(authRoutes);
 app.use(userRoutes);
+app.use(chatRoutes);
 
 // settings
-app.set('port', process.env.PORT || 3000);
+// app.set('port', process.env.PORT || 3000);
 
-export default app;
+export default {
+    httpServer, port
+}
