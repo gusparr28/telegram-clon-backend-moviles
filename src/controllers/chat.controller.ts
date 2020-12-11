@@ -39,3 +39,14 @@ export const getChatsByUser = async (req: any, res: Response) => {
         return res.status(500).json({ status: 500, message: 'Internal server error', error: e });
     };
 };
+
+export const deleteChat = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+        await Chat.findByIdAndDelete(id);
+        return res.status(200).json({ status: 200, message: 'Task successfully deleted' });
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ status: 500, message: 'Internal server error', error: e });
+    };
+};
