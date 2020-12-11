@@ -3,7 +3,6 @@ import express from 'express';
 import cors from 'cors';
 const app = express();
 import { createServer } from 'http';
-// import { Server } from 'socket.io';
 
 import Chat from './models/Chat';
 
@@ -12,7 +11,6 @@ import userRoutes from './routes/user';
 import chatRoutes from './routes/chat';
 
 const httpServer: any = createServer(app);
-// const io = new Server(httpServer);
 const port = process.env.PORT || 3000;
 const io = require("socket.io")(httpServer, {
     cors: {
@@ -35,10 +33,11 @@ io.on('connection', (socket: any) => {
     });
     socket.on('send-message', async (message: any) => {
         try {
+            console.log(message);
             await Chat.findByIdAndUpdate(socket.room, {
                 messageInfo: message
             }, { new: true });
-            io.to(socket.room).emit('message', message);
+            socket.io.to(socket.room).emit('message', message);
         } catch (e) {
             console.error(e);
         };
@@ -55,9 +54,6 @@ io.on('connection', (socket: any) => {
 app.use(authRoutes);
 app.use(userRoutes);
 app.use(chatRoutes);
-
-// settings
-// app.set('port', process.env.PORT || 3000);
 
 export default {
     httpServer, port

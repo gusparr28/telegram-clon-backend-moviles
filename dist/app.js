@@ -22,7 +22,6 @@ const auth_1 = __importDefault(require("./routes/auth"));
 const user_1 = __importDefault(require("./routes/user"));
 const chat_1 = __importDefault(require("./routes/chat"));
 const httpServer = http_1.createServer(app);
-// const io = new Server(httpServer);
 const port = process.env.PORT || 3000;
 const io = require("socket.io")(httpServer, {
     cors: {
@@ -47,7 +46,7 @@ io.on('connection', (socket) => {
             yield Chat_1.default.findByIdAndUpdate(socket.room, {
                 messageInfo: message
             }, { new: true });
-            io.to(socket.room).emit('message', message);
+            socket.io.to(socket.room).emit('message', message);
         }
         catch (e) {
             console.error(e);
@@ -65,8 +64,6 @@ io.on('connection', (socket) => {
 app.use(auth_1.default);
 app.use(user_1.default);
 app.use(chat_1.default);
-// settings
-// app.set('port', process.env.PORT || 3000);
 exports.default = {
     httpServer, port
 };

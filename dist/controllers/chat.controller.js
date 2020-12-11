@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getChatsByUser = exports.getChatById = exports.createChat = void 0;
+exports.deleteChat = exports.getChatsByUser = exports.getChatById = exports.createChat = void 0;
 const Chat_1 = __importDefault(require("../models/Chat"));
 const createChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userOne, userTwo } = req.body;
@@ -56,3 +56,16 @@ const getChatsByUser = (req, res) => __awaiter(void 0, void 0, void 0, function*
     ;
 });
 exports.getChatsByUser = getChatsByUser;
+const deleteChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        yield Chat_1.default.findByIdAndDelete(id);
+        return res.status(200).json({ status: 200, message: 'Chat successfully deleted' });
+    }
+    catch (e) {
+        console.error(e);
+        return res.status(500).json({ status: 500, message: 'Internal server error', error: e });
+    }
+    ;
+});
+exports.deleteChat = deleteChat;

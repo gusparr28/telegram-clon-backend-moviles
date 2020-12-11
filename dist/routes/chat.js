@@ -6,4 +6,5 @@ const chat_controller_1 = require("../controllers/chat.controller");
 router.post('/chat', chat_controller_1.createChat);
 router.get('/chat/:id', chat_controller_1.getChatById);
 router.get('/get-chats/:id', chat_controller_1.getChatsByUser);
+router.delete('/delete/:id', chat_controller_1.deleteChat);
 exports.default = router;
