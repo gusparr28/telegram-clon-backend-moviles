@@ -47,20 +47,12 @@ io.on('connection', (socket) => {
             yield Chat_1.default.findByIdAndUpdate(socket.room, {
                 messageInfo: message
             }, { new: true });
-            // const newChat = new Chat({
-            //     messageInfo: [{
-            //         message: message.text,
-            //         user: message.user
-            //     }]
-            // });
-            // await newChat.save();
-            socket.broadcast.to(socket.room).emit('message', message);
+            io.to(socket.room).emit('message', message);
         }
         catch (e) {
             console.error(e);
         }
         ;
-        // io.to(socket.room).emit('message', { user: message.user, text: message.text });
     }));
     socket.on('typing', (user) => {
         socket.broadcast.to(socket.room).emit('user-typing', { message: user + ' is typing...' });

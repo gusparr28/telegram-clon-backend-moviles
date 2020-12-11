@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 const app = express();
 import { createServer } from 'http';
-import { Server } from 'socket.io';
+// import { Server } from 'socket.io';
 
 import Chat from './models/Chat';
 
@@ -35,22 +35,13 @@ io.on('connection', (socket: any) => {
     });
     socket.on('send-message', async (message: any) => {
         try {
-            console.log(message);
             await Chat.findByIdAndUpdate(socket.room, {
                 messageInfo: message
             }, { new: true });
-            // const newChat = new Chat({
-            //     messageInfo: [{
-            //         message: message.text,
-            //         user: message.user
-            //     }]
-            // });
-            // await newChat.save();
-            socket.broadcast.to(socket.room).emit('message', message);
+            io.to(socket.room).emit('message', message);
         } catch (e) {
             console.error(e);
         };
-        // io.to(socket.room).emit('message', { user: message.user, text: message.text });
     });
     socket.on('typing', (user: any) => {
         socket.broadcast.to(socket.room).emit('user-typing', { message: user + ' is typing...' });
